@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - develop # デバック用に
 
 permissions:
   contents: write
