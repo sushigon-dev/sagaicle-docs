@@ -9,27 +9,27 @@ paths:
   /api/tags:
     $ref: "./paths/tags.yaml"
   /api/search:
-    $ref: "./paths/routes.yaml#/api/search"
+    $ref: "./paths/routes.yaml#/paths/~1api~1search"
   /api/routes:
-    $ref: "./paths/routes.yaml#/api/routes"
+    $ref: "./paths/routes.yaml#/paths/~1api~1routes"
   /api/routes/{route_id}:
-    $ref: "./paths/routes.yaml#/api/routes/{route_id}"
+    $ref: "./paths/routes.yaml#/paths/~1api~1routes~1{route_id}"
   /api/routes/{route_id}/like:
     $ref: "./paths/likes.yaml"
   /api/routes/{route_id}/checkpoints:
-    $ref: "./paths/checkpoints.yaml#/api/routes/{route_id}/checkpoints"
+    $ref: "./paths/checkpoints.yaml#/paths/~1api~1routes~1{route_id}~1checkpoints"
   /api/routes/{route_id}/checkpoints/{checkpoint_index}/visit:
-    $ref: "./paths/checkpoints.yaml#/api/routes/{route_id}/checkpoints/{checkpoint_index}/visit"
+    $ref: "./paths/checkpoints.yaml#/paths/~1api~1routes~1{route_id}~1checkpoints~1{checkpoint_index}~1visit"
   /api/user:
     $ref: "./paths/user.yaml"
   /api/auth/register:
-    $ref: "./paths/auth.yaml#/api/auth/register"
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1register"
   /api/auth/login:
-    $ref: "./paths/auth.yaml#/api/auth/login"
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1login"
   /api/auth/logout:
-    $ref: "./paths/auth.yaml#/api/auth/logout"
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1logout"
   /api/auth/me:
-    $ref: "./paths/auth.yaml#/api/auth/me"
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1me"
 components:
   schemas:
     UUID:
