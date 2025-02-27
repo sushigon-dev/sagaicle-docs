@@ -2,7 +2,7 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
-    <title>Swagger UI</title>
+    <title>Sushigon API Documentation</title>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui.css"
@@ -14,13 +14,13 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.15.5/swagger-ui-standalone-preset.js"></script>
     <script>
       window.onload = function () {
-        const ui = SwaggerUIBundle({
-          url: "swagger.yaml", // 同一ドメイン上の swagger.yaml を指定
+        SwaggerUIBundle({
+          url: "openapi.yaml",
           dom_id: "#swagger-ui",
+          deepLinking: true,
           presets: [SwaggerUIBundle.presets.apis, SwaggerUIStandalonePreset],
           layout: "StandaloneLayout",
         });
-        window.ui = ui;
       };
     </script>
   </body>

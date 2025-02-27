@@ -1,0 +1,156 @@
+openapi: "3.0.3"
+info:
+  title: Sushigon API
+  version: "1.0.0"
+  description: API specification for the Sushigon project.
+servers:
+  - url: https://x162-43-27-150.static.xvps.ne.jp
+paths:
+  /api/tags:
+    $ref: "./paths/tags.yaml"
+  /api/search:
+    $ref: "./paths/routes.yaml#/paths/~1api~1search"
+  /api/routes:
+    $ref: "./paths/routes.yaml#/paths/~1api~1routes"
+  /api/routes/{route_id}:
+    $ref: "./paths/routes.yaml#/paths/~1api~1routes~1{route_id}"
+  /api/routes/{route_id}/like:
+    $ref: "./paths/likes.yaml"
+  /api/routes/{route_id}/checkpoints:
+    $ref: "./paths/checkpoints.yaml#/paths/~1api~1routes~1{route_id}~1checkpoints"
+  /api/routes/{route_id}/checkpoints/{checkpoint_index}/visit:
+    $ref: "./paths/checkpoints.yaml#/paths/~1api~1routes~1{route_id}~1checkpoints~1{checkpoint_index}~1visit"
+  /api/user:
+    $ref: "./paths/user.yaml"
+  /api/auth/register:
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1register"
+  /api/auth/login:
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1login"
+  /api/auth/logout:
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1logout"
+  /api/auth/me:
+    $ref: "./paths/auth.yaml#/paths/~1api~1auth~1me"
+components:
+  schemas:
+    UUID:
+      type: string
+      format: uuid
+
+    RangeFloat:
+      type: object
+      properties:
+        min:
+          type: number
+          format: double
+          minimum: 0.0
+          default: 0.0
+        max:
+          type: number
+          format: double
+          minimum: 0.0
+          default: 0.0
+
+    RangeInt:
+      type: object
+      properties:
+        min:
+          type: integer
+          minimum: 0
+          default: 0
+        max:
+          type: integer
+          minimum: 0
+          default: 0
+
+    Sort:
+      type: object
+      properties:
+        key:
+          type: string
+          enum: ["distance", "time", "likes", "update_at"]
+          default: "likes"
+        order:
+          type: string
+          enum: ["asc", "desc"]
+          default: "asc"
+
+    TagArray:
+      type: array
+      items:
+        type: string
+        minLength: 1
+        maxLength: 10
+      minItems: 0
+      maxItems: 20
+
+    SearchOption:
+      type: array
+      items:
+        type: string
+        enum: ["AND", "OR", "NOT"]
+      default: ["OR"]
+
+    Limit:
+      type: integer
+      minimum: 1
+      maximum: 60
+      default: 12
+
+    RouteSummary:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/UUID"
+        title:
+          type: string
+        description:
+          type: string
+        distance:
+          type: number
+          format: double
+        time:
+          type: integer
+        tags:
+          $ref: "#/components/schemas/TagArray"
+        likes:
+          type: integer
+        image:
+          type: string
+          format: uri
+        update_at:
+          type: string
+          pattern: "^\\d{4}/\\d{2}/\\d{2}$"
+
+    Checkpoint:
+      type: object
+      properties:
+        name:
+          type: string
+        lat:
+          type: number
+          format: double
+        lng:
+          type: number
+          format: double
+
+    BadgedRoute:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+
+    LikedRoute:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/UUID"
+        title:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
