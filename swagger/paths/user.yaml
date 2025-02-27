@@ -1,0 +1,48 @@
+get:
+  summary: ユーザープロフィール取得 (GetProfile)
+  operationId: GetProfile
+  security:
+    - bearerAuth: []
+  responses:
+    "200":
+      description: 成功
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+        Authorization:
+          schema:
+            type: string
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              user_name:
+                type: string
+              badged_routes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BadgedRoute"
+              liked_routes:
+                type: array
+                items:
+                  $ref: "#/components/schemas/LikedRoute"
+              mileage:
+                type: number
+                format: double
+              total_distance:
+                type: number
+                format: double
+              error:
+                type: string
+                example: ""
+    "400":
+      description: 不正なリクエスト
+    "401":
+      description: 未認証
+    "404":
+      description: ユーザーが存在しない
+    "500":
+      description: サーバー内エラー
