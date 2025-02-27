@@ -16,4 +16,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./swagger # ルートディレクトリ全体をデプロイ（必要に応じて変更）
+          publish_dir: ./swagger/
+          publish_branch: gh-pages
