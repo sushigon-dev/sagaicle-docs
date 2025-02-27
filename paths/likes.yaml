@@ -8,7 +8,7 @@ get:
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/UUID"
+        $ref: "../openapi.yaml#/components/schemas/UUID"
   responses:
     "200":
       description: 成功
@@ -23,7 +23,7 @@ get:
             type: object
             properties:
               route_id:
-                $ref: "#/components/schemas/UUID"
+                $ref: "../openapi.yaml#/components/schemas/UUID"
               is_liked:
                 type: boolean
               likes:
@@ -49,7 +49,7 @@ post:
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/UUID"
+        $ref: "../openapi.yaml#/components/schemas/UUID"
   responses:
     "200":
       description: 成功
@@ -64,7 +64,7 @@ post:
             type: object
             properties:
               route_id:
-                $ref: "#/components/schemas/UUID"
+                $ref: "../openapi.yaml#/components/schemas/UUID"
               likes:
                 type: integer
               error:
@@ -88,7 +88,7 @@ delete:
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/UUID"
+        $ref: "../openapi.yaml#/components/schemas/UUID"
   responses:
     "200":
       description: 成功
@@ -103,7 +103,7 @@ delete:
             type: object
             properties:
               route_id:
-                $ref: "#/components/schemas/UUID"
+                $ref: "../openapi.yaml#/components/schemas/UUID"
               likes:
                 type: integer
               error:
