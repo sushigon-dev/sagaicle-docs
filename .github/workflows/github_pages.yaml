@@ -3,16 +3,19 @@ name: Deploy Swagger UI to GitHub Pages
 on:
   push:
     branches:
-      - main # main ブランチに push されたときに実行
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: リポジトリをチェックアウト
+      - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: GitHub Pages へデプロイ
+      - name: Create .nojekyll file
+        run: touch .nojekyll
+
+      - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
