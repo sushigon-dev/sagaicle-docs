@@ -1,0 +1,94 @@
+paths:
+  /api/routes/{route_id}/checkpoints:
+    get:
+      summary: どのチェックポイントに訪れているか (GetVisitedCheckpoints)
+      operationId: GetVisitedCheckpoints
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: route_id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UUID"
+      responses:
+        "200":
+          description: 成功
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  route_id:
+                    $ref: "#/components/schemas/UUID"
+                  visited_checkpoints:
+                    type: array
+                    items:
+                      type: boolean
+                  error:
+                    type: string
+                    example: ""
+        "400":
+          description: 不正なリクエスト
+        "401":
+          description: 未認証
+        "404":
+          description: リソースが存在しない
+        "500":
+          description: サーバー内エラー
+
+  /api/routes/{route_id}/checkpoints/{checkpoint_index}/visit:
+    post:
+      summary: チェックポイントに訪れる (VisitCheckpoints)
+      operationId: VisitCheckpoints
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: route_id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/UUID"
+        - name: checkpoint_index
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 0
+      responses:
+        "200":
+          description: 成功
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  route_id:
+                    $ref: "#/components/schemas/UUID"
+                  checkpoint_index:
+                    type: integer
+                  visited_count:
+                    type: integer
+                  total_checkpoints:
+                    type: integer
+                  error:
+                    type: string
+                    example: ""
+        "400":
+          description: 不正なリクエスト
+        "401":
+          description: 未認証
+        "404":
+          description: リソースが存在しない
+        "500":
+          description: サーバー内エラー

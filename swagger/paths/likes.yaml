@@ -1,0 +1,119 @@
+get:
+  summary: ルートがいいね済みか判定 (IsLiked)
+  operationId: IsLiked
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: route_id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/UUID"
+  responses:
+    "200":
+      description: 成功
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              route_id:
+                $ref: "#/components/schemas/UUID"
+              is_liked:
+                type: boolean
+              likes:
+                type: integer
+              error:
+                type: string
+                example: ""
+    "400":
+      description: 不正なリクエスト
+    "401":
+      description: 未認証
+    "404":
+      description: リソースが存在しない
+    "500":
+      description: サーバー内エラー
+post:
+  summary: いいね追加 (Like)
+  operationId: Like
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: route_id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/UUID"
+  responses:
+    "200":
+      description: 成功
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              route_id:
+                $ref: "#/components/schemas/UUID"
+              likes:
+                type: integer
+              error:
+                type: string
+                example: ""
+    "400":
+      description: 不正なリクエスト
+    "401":
+      description: 未認証
+    "404":
+      description: リソースが存在しない
+    "500":
+      description: サーバー内エラー
+delete:
+  summary: いいね削除 (Dislike)
+  operationId: Dislike
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: route_id
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/UUID"
+  responses:
+    "200":
+      description: 成功
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              route_id:
+                $ref: "#/components/schemas/UUID"
+              likes:
+                type: integer
+              error:
+                type: string
+                example: ""
+    "400":
+      description: 不正なリクエスト
+    "401":
+      description: 未認証
+    "404":
+      description: リクエストが存在しない
+    "500":
+      description: サーバー内エラー
