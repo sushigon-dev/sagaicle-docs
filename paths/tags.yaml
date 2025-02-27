@@ -1,0 +1,32 @@
+get:
+  summary: 検索可能なタグの取得 (GetTags)
+  operationId: GetTags
+  responses:
+    "200":
+      description: 成功
+      headers:
+        Content-Type:
+          schema:
+            type: string
+            example: application/json
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              tags:
+                type: array
+                items:
+                  type: string
+              error:
+                type: string
+                example: ""
+    "500":
+      description: サーバー内エラー
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
