@@ -1,0 +1,19 @@
+name: Deploy Swagger UI to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # main ブランチに push されたときに実行
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: リポジトリをチェックアウト
+        uses: actions/checkout@v3
+
+      - name: GitHub Pages へデプロイ
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./swagger # ルートディレクトリ全体をデプロイ（必要に応じて変更）
