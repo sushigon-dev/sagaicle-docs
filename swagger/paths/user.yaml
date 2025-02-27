@@ -24,11 +24,11 @@ get:
               badged_routes:
                 type: array
                 items:
-                  $ref: "#/components/schemas/BadgedRoute"
+                  $ref: "../openapi.yaml#/components/schemas/BadgedRoute"
               liked_routes:
                 type: array
                 items:
-                  $ref: "#/components/schemas/LikedRoute"
+                  $ref: "../openapi.yaml#/components/schemas/LikedRoute"
               mileage:
                 type: number
                 format: double
