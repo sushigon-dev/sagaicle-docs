@@ -1,75 +1,66 @@
-## エンティティの洗い出し
+## タグテーブル
 
-- ユーザー `Users`
-  - ユーザー登録、ログイン、プロフィール取得で利用
-- ルート `Routes`
-  - タイトル、説明、距離、時間、画像、地図 URI、チェックポイント数、更新日時などを保持
-- チェックポイント `Checkpoints`
-  - 各ルートに含まれる位置情報（名前、緯度、経度）
-- タグ `Tags`
-  - ルートに紐づくキーワード。API の GetTags で一覧取得
-- ルートとタグの関係 `Route_Tags`
-  - ルートとタグは多対多の関係になるため、中間テーブルで管理
-- いいね `Likes`
-  - ユーザーがルートに対して「いいね」をする。ユーザーとルートの多対多の関係
-- チェックポイント訪問 `Checkpoint_Visits`
-  - 各ユーザーがどのチェックポイントに訪れたかを記録する
+- `tags`: 文字列の配列、タグの配列を格納
+  - 要素数上限: 20
+  - 要素１つについて上限: 10 文字、下限: 1 文字
 
-## テーブル設計
+## ルートテーブル
 
-### `Users` テーブル
+- `id`: string (UUIDv4) ルートの ID
+- `title`: string タイトル
+  - 上限: 20 文字、下限: 1 文字
+- `description`: string ひとこと説明
+  - 上限: 60 文字、下限: 1 文字
+- `full_description`: string 説明詳細
+  - 上限: 200 文字、下限: 1 文字
+- `distance`: float 距離
+  - 64bit、上限: 符号付き浮動小数 64bit の上限、下限: 0.0
+- `time`: int 目安時間
+  - 64bit、上限: 符号付き 64bit 整数の上限、下限: 0
+- `tags`: string[] タグ
+  - 要素数上限: 20、下限: 1
+  - 要素１つについて上限: 10 文字、下限: 1 文字
+- `likes`: int いいね数
+- `image`: string 画像の URL (詳細の 0 番目)
+- `update_at`: string 更新日 `yyyy/mm/dd`
+- `total_checkpoints`: int チェックポイントの要素数
+  - 上限: 20, 下限: 1
+- `images`: string[] 画像の URL
+  - 要素数上限: 6、下限: 1
+  - 要素１つについて上限: 1023 文字、下限: 8 文字
+  - URL スキーム: `https://`
+  - ドメイン: `github.com/sushigon-dev/sagaicle-docs`, `x162-43-27-150.static.xvps.ne.jp/sushigon-dev/sagaicle-docs`, `153.125.129.128/sushigon-dev/sagaicle-docs` など
+  - フォーマット例: `https://example.com/images/{UUIDv4}.{png|jpg|jpeg|webp}`
+- `map`: string マップの URL
+  - 上限: 1023 文字、下限: 8 文字
+  - URL スキーム: `https://`
+  - ドメイン: `www.google.com`
+  - フォーマット例: `https://www.google.com/maps/embed?pb=めちゃ長い値`
 
-- `user_id`: UUID (主キー)
-- `user_name`: ユニークなユーザー名
-- `password_hash`: パスワードのハッシュ値
-- その他、`mileage` や `total_distance` などのユーザー固有情報
+## チェックポイントテーブル
 
-### `Routes` テーブル
+- `name`: string チェックポイントの名前
+- `lat`: float 緯度
+- `lng`: float 経度
 
-- `route_id`: UUID (主キー)
-- `title`, `description`, `full_description`
-- `distance`: 浮動小数点数
-- `time`: 整数（所要時間）
-- `total_checkpoints`: チェックポイント数
-- `map`: 地図の URI
-- `update_at`: 更新日（YYYY/MM/DD 形式）
-- `created_by`: 作成者のユーザー ID（必要なら外部キー）
+## ユーザーテーブル
 
-### `Route_Images` テーブル
+- `user_id`: string (UUIDv4) ユーザーの ID
+- `user_name`: string ユーザー名
+  - 上限: 32 文字、下限: 1 文字
+- `hashed_password`:string ハッシュ化したパスワード
+  - ハッシュ関数に依存
+- `mileage`: float ユーザーが走行済みの距離
+  - 64bit
+- `total_distance`: float 走行可能距離の最大値
+  - 64bit
 
-- `id`: 自動採番 ID
-- `route_id`: 外部キー (`Routes.route_id`)
-- `image_uri`: 画像の URI
-- ルート毎に 1 ～ 6 枚の画像が存在するため、専用テーブルにしても良い
+## 中間テーブル
 
-### `Tags` テーブル
+- いいねテーブル (ユーザーとルートの関連): ユーザーがいいねしたルートを記録
+- バッジテーブル (ユーザーとルートの関連): ユーザーが取得したバッジのルートを記録
+- 訪問済みチェックポイントテーブル (ユーザーとチェックポイントの関連): ユーザーが訪問したチェックポイントを記録
 
-- `tag_name`: 主キー（例：短い文字列）
-- 単純なタグ一覧として管理
+## その他
 
-### `Route_Tags` テーブル
-
-- `route_id`: 外部キー (`Routes.route_id`)
-- `tag_name`: 外部キー (`Tags.tag_name`)
-- 複合主キー (`route_id`, `tag_name`)
-
-### `Checkpoints` テーブル
-
-- `id`: 自動採番または複合主キー（`route_id` と `checkpoint_index` の組み合わせ）
-- `route_id`: 外部キー (`Routes.route_id`)
-- `checkpoint_index`: 各ルート内での順序番号
-- `name`, `lat`, `lng`
-
-### `Likes` テーブル
-
-- `route_id`: 外部キー (`Routes.route_id`)
-- `user_id`: 外部キー (`Users.user_id`)
-- 複合主キー (`route_id`, `user_id`)
-
-### `Checkpoint_Visits` テーブル
-
-- `route_id`: 外部キー (`Routes.route_id`)
-- `user_id`: 外部キー (`Users.user_id`)
-- `checkpoint_index`: チェックポイント番号（Routes 内でのインデックス）
-- 複合主キー (`route_id`, `user_id`, `checkpoint_index`)
-- （訪問日時などの追加情報があれば記録）
+- `error`: string エラーメッセージ (必須、成功時は空文字列)
