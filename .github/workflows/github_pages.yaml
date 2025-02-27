@@ -12,8 +12,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Create .nojekyll file
-        run: touch .nojekyll
+      - name: Create .nojekyll file in swagger folder
+        run: touch swagger/.nojekyll
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
