@@ -11,17 +11,17 @@ paths:
               type: object
               properties:
                 distance:
-                  $ref: "#/components/schemas/RangeFloat"
+                  $ref: "../openapi.yaml#/components/schemas/RangeFloat"
                 time:
-                  $ref: "#/components/schemas/RangeInt"
+                  $ref: "../openapi.yaml#/components/schemas/RangeInt"
                 tags:
-                  $ref: "#/components/schemas/TagArray"
+                  $ref: "../openapi.yaml#/components/schemas/TagArray"
                 search_option:
-                  $ref: "#/components/schemas/SearchOption"
+                  $ref: "../openapi.yaml#/components/schemas/SearchOption"
                 sort:
-                  $ref: "#/components/schemas/Sort"
+                  $ref: "../openapi.yaml#/components/schemas/Sort"
                 limit:
-                  $ref: "#/components/schemas/Limit"
+                  $ref: "../openapi.yaml#/components/schemas/Limit"
       responses:
         "200":
           description: 成功
@@ -40,20 +40,20 @@ paths:
                   routes:
                     type: array
                     items:
-                      $ref: "#/components/schemas/RouteSummary"
-                  # 受け取った検索条件も返す
+                      $ref: "../openapi.yaml#/components/schemas/RouteSummary"
+                  ../openapi.yaml# 受け取った検索条件も返す
                   distance:
-                    $ref: "#/components/schemas/RangeFloat"
+                    $ref: "../openapi.yaml#/components/schemas/RangeFloat"
                   time:
-                    $ref: "#/components/schemas/RangeInt"
+                    $ref: "../openapi.yaml#/components/schemas/RangeInt"
                   tags:
-                    $ref: "#/components/schemas/TagArray"
+                    $ref: "../openapi.yaml#/components/schemas/TagArray"
                   search_option:
-                    $ref: "#/components/schemas/SearchOption"
+                    $ref: "../openapi.yaml#/components/schemas/SearchOption"
                   sort:
-                    $ref: "#/components/schemas/Sort"
+                    $ref: "../openapi.yaml#/components/schemas/Sort"
                   limit:
-                    $ref: "#/components/schemas/Limit"
+                    $ref: "../openapi.yaml#/components/schemas/Limit"
                   error:
                     type: string
                     example: ""
@@ -95,7 +95,7 @@ paths:
                   type: integer
                   minimum: 0
                 tags:
-                  $ref: "#/components/schemas/TagArray"
+                  $ref: "../openapi.yaml#/components/schemas/TagArray"
                 total_checkpoints:
                   type: integer
                   minimum: 1
@@ -117,7 +117,7 @@ paths:
                 checkpoints:
                   type: array
                   items:
-                    $ref: "#/components/schemas/Checkpoint"
+                    $ref: "../openapi.yaml#/components/schemas/Checkpoint"
       responses:
         "201":
           description: 作成成功
@@ -132,11 +132,11 @@ paths:
                 type: object
                 properties:
                   route_id:
-                    $ref: "#/components/schemas/UUID"
+                    $ref: "../openapi.yaml#/components/schemas/UUID"
                   update_at:
                     type: string
                     pattern: "^\\d{4}/\\d{2}/\\d{2}$"
-                  # 受け取った値のエコー
+                  ../openapi.yaml# 受け取った値のエコー
                   title:
                     type: string
                     minLength: 1
@@ -157,7 +157,7 @@ paths:
                     type: integer
                     minimum: 0
                   tags:
-                    $ref: "#/components/schemas/TagArray"
+                    $ref: "../openapi.yaml#/components/schemas/TagArray"
                   total_checkpoints:
                     type: integer
                     minimum: 1
@@ -173,7 +173,7 @@ paths:
                   checkpoints:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Checkpoint"
+                      $ref: "../openapi.yaml#/components/schemas/Checkpoint"
                   error:
                     type: string
                     example: ""
@@ -193,7 +193,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: "#/components/schemas/UUID"
+            $ref: "../openapi.yaml#/components/schemas/UUID"
       responses:
         "200":
           description: 成功
@@ -208,7 +208,7 @@ paths:
                 type: object
                 properties:
                   route_id:
-                    $ref: "#/components/schemas/UUID"
+                    $ref: "../openapi.yaml#/components/schemas/UUID"
                   title:
                     type: string
                   description:
@@ -221,7 +221,7 @@ paths:
                   time:
                     type: integer
                   tags:
-                    $ref: "#/components/schemas/TagArray"
+                    $ref: "../openapi.yaml#/components/schemas/TagArray"
                   total_checkpoints:
                     type: integer
                   images:
@@ -238,7 +238,7 @@ paths:
                   checkpoints:
                     type: array
                     items:
-                      $ref: "#/components/schemas/Checkpoint"
+                      $ref: "../openapi.yaml#/components/schemas/Checkpoint"
                   error:
                     type: string
                     example: ""

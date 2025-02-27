@@ -144,7 +144,7 @@ paths:
                 type: object
                 properties:
                   user_id:
-                    $ref: "#/components/schemas/UUID"
+                    $ref: "../openapi.yaml#/components/schemas/UUID"
                   user_name:
                     type: string
                   token:

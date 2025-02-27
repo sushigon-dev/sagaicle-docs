@@ -10,7 +10,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: "#/components/schemas/UUID"
+            $ref: "../openapi.yaml#/components/schemas/UUID"
       responses:
         "200":
           description: 成功
@@ -25,7 +25,7 @@ paths:
                 type: object
                 properties:
                   route_id:
-                    $ref: "#/components/schemas/UUID"
+                    $ref: "../openapi.yaml#/components/schemas/UUID"
                   visited_checkpoints:
                     type: array
                     items:
@@ -53,7 +53,7 @@ paths:
           in: path
           required: true
           schema:
-            $ref: "#/components/schemas/UUID"
+            $ref: "../openapi.yaml#/components/schemas/UUID"
         - name: checkpoint_index
           in: path
           required: true
@@ -74,7 +74,7 @@ paths:
                 type: object
                 properties:
                   route_id:
-                    $ref: "#/components/schemas/UUID"
+                    $ref: "../openapi.yaml#/components/schemas/UUID"
                   checkpoint_index:
                     type: integer
                   visited_count:
