@@ -1,0 +1,634 @@
+# 機能ベース（API）
+
+> [https://editor-next.swagger.io](https://editor-next.swagger.io/) を使って、GitHub で確定する予定
+> 今後は Notion が develop ブランチ的な扱い
+> RESTful API を採用
+> **オプショナルだと明示されていない限り、必須**
+
+---
+
+## タグ
+
+- 検索可能なタグの取得: `GetTags`
+  - Endpoint: `GET /api/tags`
+  - リクエスト: なし
+  - レスポンス
+    - Response Body
+      - tags: string[] // タグの配列
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+
+## ルート
+
+- ルート一覧検索（取得）: `SearchRoutes`
+  - Endpoint: `POST /api/search`
+  - リクエスト
+    - Request Body
+      - distance // 検索距離の構造体（範囲指定）
+        - min: float
+          - 64bit
+          - 下限: 0.0
+          - 初期値: 0.0
+          - 条件として指定しない: -1.0
+        - max: float
+          - 64bit
+          - 下限: 0.0
+          - 初期値: 0.0
+          - 条件として指定しない: -1.0
+      - time // 検索所要時間の構造体（範囲指定）
+        - min: int
+          - 下限: 0
+          - 初期値: 0
+          - 条件として指定しない: -1
+        - max: int
+          - 下限: 0
+          - 初期値: 0
+          - 条件として指定しない: -1
+      - tags: string[] // 検索に使うタグ名の配列
+        - 要素数
+          - 上限: 20
+          - 下限: 1
+        - 要素１つについて
+          - 上限: 10 文字
+          - 下限: 1 文字
+        - 初期値: （空文字配列、要素数 0）
+        - 条件として指定しない: 初期値
+      - search_option: string[] // タグの検索方法
+        - 初期値: “OR”
+        - 取りうる値
+          - “AND”
+          - “OR”
+          - ”NOT”
+      - sort // 並び替え（キーと順序の）指定構造体
+        - key: string
+          - 初期値: “likes”
+          - 取りうる値
+            - "distance"
+            - "time"
+            - "likes"
+            - "update_at"
+        - order: string
+          - 初期値: “asc”
+          - 取りうる値
+            - “asc” // 昇順
+            - “desc” // 降順
+      - limit: int // 取得する最大件数
+        - 初期値: 12
+        - 下限: 1
+        - 上限: 60
+    - Request Headers
+      - `Content-Type: application/json`
+  - レスポンス
+    - Response Body
+      - hit_count: int // 条件にヒットした件数
+      - routes[] // 次の構造体の配列
+        - id: string (UUIDv4)// 詳細に移るためのルートの ID（UUIDv4）
+        - title: string // タイトル
+        - description: string // ひとこと説明
+        - distance: float // 距離
+        - time: int // 目安時間
+        - tags: string[] // タグ
+        - likes: int // いいね数（一覧画面では静的なので API を使わない）
+        - image: string // 画像の URL（詳細の 0 番目）
+        - update_at: string // 更新日 `yyyy/mm/dd`
+      - 受け取った値も返す
+        - Request Body
+          - distance // 検索距離の構造体（範囲指定）
+            - min: float
+              - 64bit
+              - 下限: 0.0
+              - 初期値: 0.0
+              - 条件として指定しない: -1.0
+            - max: float
+              - 64bit
+              - 下限: 0.0
+              - 初期値: 0.0
+              - 条件として指定しない: -1.0
+          - time // 検索所要時間の構造体（範囲指定）
+            - min: int
+              - 下限: 0
+              - 初期値: 0
+              - 条件として指定しない: -1
+            - max: int
+              - 下限: 0
+              - 初期値: 0
+              - 条件として指定しない: -1
+          - tags: string[] // 検索に使うタグ名の配列
+            - 要素数
+              - 上限: 20
+              - 下限: 1
+            - 要素１つについて
+              - 上限: 10 文字
+              - 下限: 1 文字
+            - 初期値: （空文字配列、要素数 0）
+            - 条件として指定しない: 初期値
+          - search_option: string[] // タグの検索方法
+            - 初期値: “OR”
+            - 取りうる値
+              - “AND”
+              - “OR”
+              - ”NOT”
+          - sort // 並び替え（キーと順序の）指定構造体
+            - key: string
+              - 初期値: “likes”
+              - 取りうる値
+                - "distance"
+                - "time"
+                - "likes"
+                - "update_at"
+            - order: string
+              - 初期値: “asc”
+              - 取りうる値
+                - “asc” // 昇順
+                - “desc” // 降順
+          - limit: int // 取得する最大件数
+            - 初期値: 12
+            - 下限: 1
+            - 上限: 60
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: 存在しないキー・値の指定が１つ以上含まれるなどのバリデーションで弾かれた場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- ルート詳細情報の作成: `PostRoute`
+  - Endpoint: `POST /api/routes`
+  - リクエスト
+    - Request Body
+      - title: string // タイトル
+        - 上限: 20 文字
+        - 下限: 1 文字
+      - description: string // ひとこと説明
+        - 上限: 60 文字
+        - 下限: 1 文字
+      - full_description: string // 説明詳細
+        - 上限: 200 文字
+        - 下限: 1 文字
+      - distance: float // 距離
+        - 64bit
+        - 上限: 符号付き浮動小数 64bit の上限
+        - 下限: 0.0
+      - time: int // 目安時間
+        - 64bit
+        - 上限: 符号付き 64bit 整数の上限
+        - 下限: 0
+      - tags: string[] // タグ
+        - 要素数
+          - 上限: 20
+          - 下限: 1
+        - 要素１つについて
+          - 上限: 10 文字
+          - 下限: 1 文字
+      - total_checkpoints: int // チェックポイントの要素数
+        - 上限: 20
+        - 下限: 1
+      - images: string[] // 画像の URL
+        - 要素数
+          - 上限: 6
+          - 下限: 1
+        - 要素１つについて
+          - 上限: 1023 文字
+          - 下限: 8 文字
+        - URL スキーム: `https://`
+        - ドメイン
+          - `github.com/sushigon-dev/sagaicle-docs`
+          - `x162-43-27-150.static.xvps.ne.jp/sushigon-dev/sagaicle-docs`
+          - `153.125.129.128/sushigon-dev/sagaicle-docs`
+          - その他デプロイサーバー
+        - フォーマットと例
+          - `https://example.com/images/{UUIDv4}.{png|jpg|jpeg|webp}`
+          - `https://github.com/sushigon-dev/images/{UUIDv4}.{png|jpg|jpeg|webp}`
+          - `https://x162-43-27-150.static.xvps.ne.jp/images/0e746155-f52e-4502-83f8-ab91e47abf6f.png`
+          - `https://github.com/sushigon-dev/sagaicle-docs/images/0e746155-f52e-4502-83f8-ab91e47abf6f.png`
+        - パストラバーサル等の脆弱性があるので本当に気をつける
+      - map: string // マップの URL
+        - 上限: 1023 文字
+        - 下限: 8 文字
+        - URL スキーム: `https://`
+        - ドメイン: `www.google.com`
+        - フォーマットと例
+          - `https://www.google.com/maps/embed?pb=めちゃ長い値`
+          - `https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d53232.399525649176!2d129.8789995119896!3d33.500727456251056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m19!3e2!4m5!1s0x356a70cc3232808d%3A0xd7a502b62a6d0a29!2z44CSODQ3LTAzMDMg5L2Q6LOA55yM5ZSQ5rSl5biC5ZG85a2Q55S65ZG85a2Q77yU77yR77yX77yXIOWRvOWtkOacneW4gg!3m2!1d33.5370608!2d129.8950614!4m5!1s0x356a7044e79d3495%3A0x882258dc0768a665!2z5rOi5oi45bKs44CB44CSODQ3LTA0MDQg5L2Q6LOA55yM5ZSQ5rSl5biC6Y6u6KW_55S65rOi5oi477yZ77yU77yX!3m2!1d33.5555046!2d129.8463836!4m5!1s0x3541d7c5afdabd47%3A0x5c7bb964cbf3f085!2z6Jm544Gu5p2-5Y6f44CB44CSODQ3LTAwMjIg5L2Q6LOA55yM5ZSQ5rSl5biC6Y-h!3m2!1d33.4460754!2d129.99401459999999!5e0!3m2!1sja!2sjp!4v1740241824233!5m2!1sja!2sjp`
+        - パストラバーサル等の脆弱性があるので本当に気をつける
+      - checkpoints[] // 次の構造体の配列
+        - name: string // チェックポイントの名前
+        - lat: float // 緯度
+        - lng: float // 経度
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+      - `Content-Type: application/json`
+  - レスポンス
+    - Response Body
+      - route_id: string (UUIDv4)// 生成したルートの UUIDv4
+      - update_at: string // 更新日
+        - 日付のフォーマット: `yyyy/mm/dd`
+        - DB ではミリ秒まで持つ
+        - 作成時はバックエンドで上書きする
+      - 受け取った値も返す
+        - Request Body
+          - title: string // タイトル
+            - 上限: 20 文字
+            - 下限: 1 文字
+          - description: string // ひとこと説明
+            - 上限: 60 文字
+            - 下限: 1 文字
+          - full_description: string // 説明詳細
+            - 上限: 200 文字
+            - 下限: 1 文字
+          - distance: float // 距離
+            - 64bit
+            - 上限: 符号付き浮動小数 64bit の上限
+            - 下限: 0.0
+          - time: int // 目安時間
+            - 64bit
+            - 上限: 符号付き 64bit 整数の上限
+            - 下限: 0
+          - tags: string[] // タグ
+            - 要素数
+              - 上限: 20
+              - 下限: 1
+            - 要素１つについて
+              - 上限: 10 文字
+              - 下限: 1 文字
+          - total_checkpoints: int // チェックポイントの要素数
+            - 上限: 20
+            - 下限: 1
+          - images: string[] // 画像の URL
+            - 要素数
+              - 上限: 6
+              - 下限: 1
+            - 要素１つについて
+              - 上限: 1023 文字
+              - 下限: 8 文字
+            - URL スキーム: `https://`
+            - ドメイン
+              - `github.com/sushigon-dev/sagaicle-docs`
+              - `x162-43-27-150.static.xvps.ne.jp/sushigon-dev/sagaicle-docs`
+              - `153.125.129.128/sushigon-dev/sagaicle-docs`
+              - その他デプロイサーバー
+            - フォーマットと例
+              - `https://example.com/images/{UUIDv4}.{png|jpg|jpeg|webp}`
+              - `https://github.com/sushigon-dev/images/{UUIDv4}.{png|jpg|jpeg|webp}`
+              - `https://x162-43-27-150.static.xvps.ne.jp/images/0e746155-f52e-4502-83f8-ab91e47abf6f.png`
+              - `https://github.com/sushigon-dev/sagaicle-docs/images/0e746155-f52e-4502-83f8-ab91e47abf6f.png`
+            - パストラバーサル等の脆弱性があるので本当に気をつける
+          - map: string // マップの URL
+            - 上限: 1023 文字
+            - 下限: 8 文字
+            - URL スキーム: `https://`
+            - ドメイン: `www.google.com`
+            - フォーマットと例
+              - `https://www.google.com/maps/embed?pb=めちゃ長い値`
+              - `https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d53232.399525649176!2d129.8789995119896!3d33.500727456251056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m19!3e2!4m5!1s0x356a70cc3232808d%3A0xd7a502b62a6d0a29!2z44CSODQ3LTAzMDMg5L2Q6LOA55yM5ZSQ5rSl5biC5ZG85a2Q55S65ZG85a2Q77yU77yR77yX77yXIOWRvOWtkOacneW4gg!3m2!1d33.5370608!2d129.8950614!4m5!1s0x356a7044e79d3495%3A0x882258dc0768a665!2z5rOi5oi45bKs44CB44CSODQ3LTA0MDQg5L2Q6LOA55yM5ZSQ5rSl5biC6Y6u6KW_55S65rOi5oi477yZ77yU77yX!3m2!1d33.5555046!2d129.8463836!4m5!1s0x3541d7c5afdabd47%3A0x5c7bb964cbf3f085!2z6Jm544Gu5p2-5Y6f44CB44CSODQ3LTAwMjIg5L2Q6LOA55yM5ZSQ5rSl5biC6Y-h!3m2!1d33.4460754!2d129.99401459999999!5e0!3m2!1sja!2sjp!4v1740241824233!5m2!1sja!2sjp`
+            - パストラバーサル等の脆弱性があるので本当に気をつける
+          - checkpoints[] // 次の構造体の配列
+            - name: string // チェックポイントの名前
+            - lat: float // 緯度
+            - lng: float // 経度
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 201 Created`: 作成成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: 不正なリクエスト・バリデーションで弾かれた場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- ルート詳細情報の取得: `GetRoute`
+  - Endpoint: `GET /api/routes/:route_id`
+  - リクエスト
+    - Path Parameters
+      - `route_id`: ルートの ID
+      - 詳細は Endpoint に記載
+  - レスポンス
+    - Response Body
+      - route_id: string (UUIDv4)// ルートの ID
+      - title: string // タイトル
+      - description: string // ひとこと説明
+      - full_description: string // 説明詳細
+      - distance: float // 距離
+      - time: int // 目安時間
+      - tags: string[] // タグ
+      - total_checkpoints: int // チェックポイントの要素数
+      - images: string[] // 画像の UR
+      - map: string // マップの URL
+      - update_at: string // 更新日
+      - checkpoints[] // 次の構造体の配列
+        - name: string // チェックポイントの名前
+        - lat: float // 緯度
+        - lng: float // 経度
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 ではない id の指定などのバリデーションで弾かれた場合）
+      - `HTTP/1.1 404 Not Found`: リソースが存在しない（例: UUIDv4 ではあるが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+
+## いいね
+
+- ルートがいいね済みか判定: `IsLiked`
+  - Endpoint: `GET /api/routes/:route_id/like`
+  - **認証必須**
+  - リクエスト
+    - Path Parameters
+      - `route_id`: ルートの ID
+      - 詳細は Endpoint に記載
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - route_id: string (UUIDv4)// ルートの ID
+      - is_liked: bool // いいねしているか
+      - likes: int // いいね数
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 ではない id の指定などのバリデーションで弾かれ）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: リソースが存在しない（例: UUIDv4 ではあるが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- いいね追加: `Like`
+  - Endpoint: `POST /api/routes/:route_id/like`
+  - **認証必須**
+  - リクエスト
+    - Path Parameters
+      - `route_id`: ルートの ID
+      - 詳細は Endpoint に記載
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - route_id: string (UUIDv4)// ルートの ID
+      - likes: int // いいね数
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 ではない id の指定などのバリデーションで弾かれた場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: リソースが存在しない（例: UUIDv4 ではあるが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- いいね削除: `Dislike`
+  - Endpoint: `DELETE /api/routes/:route_id/like`
+  - **認証必須**
+  - リクエスト
+    - Path Parameters
+      - `route_id`: ルートの ID
+      - 詳細は Endpoint に記載
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - route_id: string (UUIDv4)// ルートの ID
+      - likes: int // いいね数
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 ではない id の指定などのバリデーションで弾かれた場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: リクエストが存在しない（例: UUIDv4 ではあるが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+
+## チェックポイント
+
+- どのチェックポイントに訪れているか: `GetVisitedCheckpoints`
+  - Endpoint: `GET /api/routes/:route_id/checkpoints`
+  - **認証必須**
+  - リクエスト
+    - Path Parameters
+      - `route_id`: ルートの ID
+      - 詳細は Endpoint に記載
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - route_id: string (UUIDv4) // ルートの ID
+      - visited_checkpoints[]: boolean[] // 訪問済みなら true
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 ではない id の指定などのバリデーションで弾かれた場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: リソースが存在しない（例: UUIDv4 ではあるが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- チェックポイントに訪れる: `VisitCheckpoints`
+  - Endpoint: `POST /api/routes/:route_id/checkpoints/:checkpoint_index/visit`
+  - **認証必須**
+  - リクエスト
+    - Path Parameters
+      - `route_id`: ルートの ID
+        - 詳細は Endpoint に記載
+      - `checkpoint_index`: チェックポイントの添字
+        - 零始まり
+        - 詳細は Endpoint に記載
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - route_id: // ルートの ID
+      - checkpoint_index: // チェックポイントの添字
+      - visited_count: // 処理後のチェックイン状況
+      - total_checkpoints: // チェックポイントの要素数
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 ではない id の指定などのバリデーションで弾かれた場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: リソースが存在しない（例: UUIDv4 ではあるがその ID をもつルート存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+
+## ユーザー情報（バッジ含む）
+
+- ユーザープロフィール取得: `GetProfile`
+  - Endpoint: `GET /api/user`
+  - **認証必須**
+  - リクエスト
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - user_name: string // ユーザー名
+      - badged_routes[] // 取得済みバッチ構造体
+        - id: string // バッヂのルート ID
+        - title: string // バッヂのタイトル
+      - liked_routes[]: // いいね済みのルート構造体
+        - id: string // いいね済みのルート ID（UUIDv4）
+        - title: string // いいね済みのルートタイトル
+      - mileage: float // ユーザーが走行済みの距離
+        - 64bit
+      - total_distance: float // 走行可能距離の最大値
+        - 64bit
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+      - `Authorization: Bearer <JWTトークン>`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 でないパスパラメーターの場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: ユーザーが存在しない（例: UUIDv4 ではあるがその ID をもつユーザーが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+
+## ユーザー情報（バッジ含む）
+
+- ユーザープロフィール取得: `GetProfile`
+  - Endpoint: `GET /api/user`
+  - **認証必須**
+  - リクエスト
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - user_name: string // ユーザー名
+      - badged_routes[] // 取得済みバッチ構造体
+        - id: string // バッヂのルート ID
+        - title: string // バッヂのタイトル
+      - liked_routes[]: // いいね済みのルート構造体
+        - id: string // いいね済みのルート ID（UUIDv4）
+        - title: string // いいね済みのルートタイトル
+      - mileage: float // ユーザーが走行済みの距離
+        - 64bit
+      - total_distance: float // 走行可能距離の最大値
+        - 64bit
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+      - `Authorization: Bearer <JWTトークン>`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: UUIDv4 でないパスパラメーターの場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 404 Not Found`: ユーザーが存在しない（例: UUIDv4 ではあるがその ID をもつユーザーが存在しない場合）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+
+## ローカル認証
+
+- ユーザ登録（サインアップ）: `Register`
+  - Endpoint: `POST /api/auth/register`
+  - リクエスト
+    - Request Body
+      - user_name: string // 一意のユーザー名
+        - 上限: 32 文字
+        - 下限: 1 文字
+      - password: string // パスワード
+        - 上限: 32 文字
+        - 下限: 1 文字
+    - Request Headers
+      - `Content-Type: application/json`
+  - レスポンス
+    - Response Body
+      - user_name: string // 一意のユーザー名
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+      - `Set-Cookie: token=<JWTトークン>`
+    - HTTP Status Code
+      - `HTTP/1.1 201 Created`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: 文字数が長すぎるなどのバリデーションで弾かれた場合）
+      - `HTTP/1.1 409 Conflict`: 一意の値が衝突（例: ユーザー名がコンフリクトした）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- ログイン: `Login`
+  - Endpoint: `POST /api/auth/login`
+  - リクエスト
+    - Request Body
+      - user_name: string // 一意のユーザー名
+        - 上限: 32 文字
+        - 下限: 1 文字
+      - password: string // パスワード
+        - 上限: 32 文字
+        - 下限: 1 文字
+    - Request Headers
+      - `Content-Type: application/json`
+  - レスポンス
+    - Response Body
+      - user_name: string // 一意のユーザー名
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+      - `Set-Cookie: token=<JWTトークン>`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: 文字数が長すぎるなどのバリデーションで弾かれた場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証（例: パスワード違う）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- ログアウト（トークンの revoke）: `Logout`
+  - Endpoint: `DELETE /api/auth/logout`
+  - **認証必須**
+  - リクエスト
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - token: // 削除された JWT トークン
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: トークンの形式が違う場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー
+- ユーザー自身の認証情報取得: `Whoami`
+  - Endpoint: `GET /api/auth/me`
+  - **認証必須**
+  - リクエスト
+    - Request Headers
+      - `Authorization: Bearer <JWTトークン>`
+  - レスポンス
+    - Response Body
+      - user_id: string (UUIDv4)// ユーザーの ID
+      - user_name: string // ユーザー名
+      - token: // JWT トークン
+      - error: string // エラーメッセージ
+        - 必須
+        - 成功時は空文字列
+    - Response Headers
+      - `Content-Type: application/json`
+    - HTTP Status Code
+      - `HTTP/1.1 200 OK`: 成功
+      - `HTTP/1.1 400 Bad Request`: 不正なリクエスト（例: トークンの形式が違う場合）
+      - `HTTP/1.1 401 Unauthorized`: 未認証（ユーザーが存在しないを含む）
+      - `HTTP/1.1 500 Internal Server Error`: サーバー内エラー

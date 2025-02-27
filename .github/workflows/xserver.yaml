@@ -1,0 +1,42 @@
+name: Deploy Swagger UI to xserver VPS
+
+on:
+  push:
+    paths:
+      - swagger.yaml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Deploy to VPS via SSH
+        uses: appleboy/ssh-action@v0.1.11
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USERNAME }}
+          key: ${{ secrets.VPS_PRIVATE_KEY }}
+          port: ${{ secrets.VPS_PORT }}
+          script: |
+            # デプロイ先ディレクトリ（例: /home/<ユーザー>/deploy/swagger-ui）
+            DEPLOY_DIR=/home/${{ secrets.VPS_USERNAME }}/deploy/swagger-ui
+            mkdir -p $DEPLOY_DIR
+            cd $DEPLOY_DIR
+
+            # リポジトリのクローンまたは更新
+            if [ ! -d repo ]; then
+              echo "初回デプロイ：git clone を実行"
+              git clone https://github.com/sushigon-dev/sagaicle-docs.git repo
+            else
+              echo "既存リポジトリを更新：git pull を実行"
+              cd repo && git pull && cd ..
+            fi
+
+            # リポジトリ内で Docker イメージをビルド＆コンテナを再起動
+            cd repo
+            docker build -t swagger-ui:latest -f swagger/Dockerfile swagger
+            docker stop swagger-ui || true
+            docker rm swagger-ui || true
+            docker run -d --name swagger-ui -p 8080:8082 swagger-ui:latest
