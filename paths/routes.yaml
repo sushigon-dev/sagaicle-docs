@@ -41,7 +41,7 @@ paths:
                     type: array
                     items:
                       $ref: "../openapi.yaml#/components/schemas/RouteSummary"
-                  ../openapi.yaml# 受け取った検索条件も返す
+                  # 受け取った検索条件も返す
                   distance:
                     $ref: "../openapi.yaml#/components/schemas/RangeFloat"
                   time:
@@ -136,7 +136,7 @@ paths:
                   update_at:
                     type: string
                     pattern: "^\\d{4}/\\d{2}/\\d{2}$"
-                  ../openapi.yaml# 受け取った値のエコー
+                  # 受け取った値のエコー
                   title:
                     type: string
                     minLength: 1
