@@ -4,7 +4,7 @@ info:
   version: "1.0.0"
   description: API specification for the Sushigon project.
 servers:
-  - url: https://api.example.com
+  - url: https://x162-43-27-150.static.xvps.ne.jp
 paths:
   /api/tags:
     $ref: "./paths/tags.yaml"
