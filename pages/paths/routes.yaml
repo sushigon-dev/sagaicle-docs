@@ -74,9 +74,7 @@ paths:
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                $ref: "../openapi.yaml#/components/schemas/Route"
+              $ref: "../openapi.yaml#/components/schemas/Route"
         "201":
           description: 作成成功
           headers:
