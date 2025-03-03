@@ -21,7 +21,7 @@ get:
             properties:
               user_name:
                 type: string
-                example: "hoge太郎"
+                example: "車輪男爵"
               badged_routes:
                 type: array
                 items:

@@ -30,6 +30,7 @@ paths:
                     type: array
                     items:
                       type: boolean
+                    example: [true, false, false]
                   error:
                     type: string
                     example: ""
@@ -60,6 +61,7 @@ paths:
           schema:
             type: integer
             minimum: 0
+            example: 1
       responses:
         "200":
           description: 成功
@@ -75,12 +77,19 @@ paths:
                 properties:
                   route_id:
                     $ref: "../openapi.yaml#/components/schemas/UUID"
-                  checkpoint_index:
-                    type: integer
-                  visited_count:
-                    type: integer
+                  visited_checkpoints:
+                    type: array
+                    items:
+                      type: boolean
+                    example: [true, false, false]
                   total_checkpoints:
                     type: integer
+                    example: 3
+                  # 受け取った値のエコー
+                  checkpoint_index:
+                    type: integer
+                    example: 1
+                  # エラー
                   error:
                     type: string
                     example: ""
