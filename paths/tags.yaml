@@ -15,9 +15,7 @@ get:
             type: object
             properties:
               tags:
-                type: array
-                items:
-                  type: string
+                $ref: "../openapi.yaml#/components/schemas/TagArray"
               error:
                 type: string
                 example: ""

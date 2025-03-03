@@ -21,6 +21,7 @@ get:
             properties:
               user_name:
                 type: string
+                example: "車輪男爵"
               badged_routes:
                 type: array
                 items:
@@ -32,9 +33,11 @@ get:
               mileage:
                 type: number
                 format: double
+                example: 203.36
               total_distance:
                 type: number
                 format: double
+                example: 35445.124
               error:
                 type: string
                 example: ""
