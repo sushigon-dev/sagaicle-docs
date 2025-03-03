@@ -26,8 +26,10 @@ get:
                 $ref: "../openapi.yaml#/components/schemas/UUID"
               is_liked:
                 type: boolean
+                example: true
               likes:
                 type: integer
+                example: 324
               error:
                 type: string
                 example: ""
@@ -67,6 +69,7 @@ post:
                 $ref: "../openapi.yaml#/components/schemas/UUID"
               likes:
                 type: integer
+                example: 324
               error:
                 type: string
                 example: ""
@@ -106,6 +109,7 @@ delete:
                 $ref: "../openapi.yaml#/components/schemas/UUID"
               likes:
                 type: integer
+                example: 323
               error:
                 type: string
                 example: ""
