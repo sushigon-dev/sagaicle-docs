@@ -5,8 +5,6 @@ info:
   description: API specification for the Sushigon project.
 servers:
   - url: http://localhost:8080
-  - url: https://x162-43-27-150.static.xvps.ne.jp
-  - url: http://x162-43-27-150.static.xvps.ne.jp
 paths:
   /api/tags:
     $ref: "./paths/tags.yaml"
@@ -101,37 +99,94 @@ components:
       maximum: 60
       default: 12
 
+    Route:
+      type: object
+      properties:
+        route_id:
+          $ref: "#/components/schemas/UUID"
+        title:
+          type: string
+          minLength: 1
+          maxLength: 20
+          example: "まじで楽しいサイクリング"
+        description:
+          type: string
+          minLength: 1
+          maxLength: 60
+          example: "未知なる、でこぼこ道を走る。きっと楽しい。"
+        full_description:
+          type: string
+          minLength: 1
+          maxLength: 200
+          example: "これがコースの説明ってやつか！！よくわからんが楽しいサイクリングコースに違いない！きっとそうだ！"
+        distance:
+          type: number
+          format: double
+          minimum: 0.0
+          example: 92.5
+        time:
+          type: integer
+          minimum: 0
+          example: 120
+        tags:
+          $ref: "#/components/schemas/TagArray"
+        total_checkpoints:
+          type: integer
+          minimum: 1
+          maximum: 20
+        images:
+          type: array
+          items:
+            type: string
+            format: uri
+            minLength: 8
+            maxLength: 1023
+            example: "https://sushigon-dev.github.io/sagaicle-docs/images/%E3%83%8F%E3%83%83%E3%82%AB%E3%82%BD%E3%83%B3_%E7%94%BB%E5%83%8F1.jpg"
+          minItems: 1
+          maxItems: 6
+        map:
+          type: string
+          format: uri
+          minLength: 8
+          maxLength: 1023
+          example: "https://www.google.com/maps/embed?pb=!1m34!1m12!1m3!1d53232.399525649176!2d129.8789995119896!3d33.500727456251056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m19!3e2!4m5!1s0x356a70cc3232808d%3A0xd7a502b62a6d0a29!2z44CSODQ3LTAzMDMg5L2Q6LOA55yM5ZSQ5rSl5biC5ZG85a2Q55S65ZG85a2Q77yU77yR77yX77yXIOWRvOWtkOacneW4gg!3m2!1d33.5370608!2d129.8950614!4m5!1s0x356a7044e79d3495%3A0x882258dc0768a665!2z5rOi5oi45bKs44CB44CSODQ3LTA0MDQg5L2Q6LOA55yM5ZSQ5rSl5biC6Y6u6KW_55S65rOi5oi477yZ77yU77yX!3m2!1d33.5555046!2d129.8463836!4m5!1s0x3541d7c5afdabd47%3A0x5c7bb964cbf3f085!2z6Jm544Gu5p2-5Y6f44CB44CSODQ3LTAwMjIg5L2Q6LOA55yM5ZSQ5rSl5biC6Y-h!3m2!1d33.4460754!2d129.99401459999999!5e0!3m2!1sja!2sjp!4v1740241824233!5m2!1sja!2sjp"
+        update_at:
+          type: string
+          pattern: "^\\d{4}/\\d{2}/\\d{2}$"
+          example: "2024/04/21"
+        checkpoints:
+          type: array
+          items:
+            $ref: "#/components/schemas/Checkpoint"
+          example:
+            [
+              { "name": "なんとか市場", "lat": 22.5, "lng": 125.789 },
+              { "name": "なんとか山", "lat": 23.0, "lng": 125.812 },
+              { "name": "なんとか神社", "lat": 23.2, "lng": 125.712 },
+            ]
+
     RouteSummary:
       type: object
       properties:
         id:
           $ref: "#/components/schemas/UUID"
         title:
-          type: string
-          example: "まじで楽しいサイクリング"
+          $ref: "#/components/schemas/Route/properties/title"
         description:
-          type: string
-          example: "未知なる、でこぼこ道を走る。きっと楽しい。"
+          $ref: "#/components/schemas/Route/properties/description"
         distance:
-          type: number
-          format: double
-          example: 92.5
+          $ref: "#/components/schemas/Route/properties/distance"
         time:
-          type: integer
-          example: 120
+          $ref: "#/components/schemas/Route/properties/time"
         tags:
           $ref: "#/components/schemas/TagArray"
         likes:
           type: integer
           example: 2
         image:
-          type: string
-          format: uri
-          example: "https://sushigon-dev.github.io/sagaicle-docs/images/%E3%83%8F%E3%83%83%E3%82%AB%E3%82%BD%E3%83%B3_%E7%94%BB%E5%83%8F1.jpg"
+          $ref: "#/components/schemas/Route/properties/images/items"
         update_at:
-          type: string
-          pattern: "^\\d{4}/\\d{2}/\\d{2}$"
-          example: "2024/04/21"
+          $ref: "#/components/schemas/Route/properties/update_at"
 
     Checkpoint:
       type: object
