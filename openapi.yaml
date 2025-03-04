@@ -4,8 +4,9 @@ info:
   version: "1.0.0"
   description: API specification for the Sushigon project.
 servers:
-  - url: http://153.125.129.128
+  - url: https://sushigon.hopto.org
   - url: http://localhost:8080
+  - url: http://153.125.129.128
 paths:
   /api/tags:
     $ref: "./paths/tags.yaml"
