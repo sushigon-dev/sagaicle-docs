@@ -93,7 +93,7 @@ components:
       items:
         type: string
         enum: ["AND", "OR", "NOT"]
-      default: ["OR"]
+      default: "OR"
 
     Limit:
       type: integer
