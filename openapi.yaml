@@ -84,7 +84,7 @@ components:
         maxLength: 10
       minItems: 0
       maxItems: 20
-      example: ["絶景", "山道"]
+      example: ["チャレンジ", "山道"]
 
     SearchOption:
       type: array
