@@ -74,7 +74,28 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "../openapi.yaml#/components/schemas/Route"
+              type: object
+              properties:
+                title:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/title"
+                description:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/description"
+                full_description:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/full_description"
+                distance:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/distance"
+                time:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/time"
+                tags:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/tags"
+                total_checkpoints:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/total_checkpoints"
+                images:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/images"
+                map:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/map"
+                checkpoints:
+                  $ref: "../openapi.yaml#/components/schemas/Route/properties/checkpoints"
       responses:
         "201":
           description: 作成成功
@@ -87,8 +108,7 @@ paths:
             application/json:
               schema:
                 allOf:
-                  # 受け取った値のエコー
-                  - $ref: "../openapi.yaml#/components/schemas/Route"
+                  - $ref: "../openapi.yaml#/components/schemas/Route" # 受け取った値含む
                   - type: object
                     properties:
                       route_id:
