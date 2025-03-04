@@ -120,14 +120,9 @@ components:
           maxLength: 200
           example: "これがコースの説明ってやつか！！よくわからんが楽しいサイクリングコースに違いない！きっとそうだ！"
         distance:
-          type: number
-          format: double
-          minimum: 0.0
-          example: 92.5
+          $ref: "#/components/schemas/RangeFloat"
         time:
-          type: integer
-          minimum: 0
-          example: 120
+          $ref: "#/components/schemas/RangeInt"
         tags:
           $ref: "#/components/schemas/TagArray"
         total_checkpoints:
